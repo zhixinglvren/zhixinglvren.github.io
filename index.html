@@ -71,12 +71,12 @@
     max-width: 720px; margin: 0 auto;
     padding: 16vh 32px 26vh;
     font-size: clamp(1.15rem, 2.6vw, 1.5rem);
-    line-height: 1.9; letter-spacing: 0.02em;
+    line-height: 1.6; letter-spacing: 0.01em;
     min-height: 100vh;
     animation: fadeIn 1.4s ease both;
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .story p { margin: 0 0 1em; color: var(--ink); }
+  .story p { margin: 0 0 0.5em; color: var(--ink); }
   .story p.blank { height: 1.1em; }
   .cursor {
     display: inline-block; width: 0.55em; height: 1.05em;
@@ -89,7 +89,7 @@
   /* controls */
   .controls {
     position: fixed; right: 18px; bottom: 18px; z-index: 10;
-    display: flex; gap: 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
   .controls button {
     width: 44px; height: 44px; border-radius: 50%;
@@ -101,8 +101,9 @@
   .controls button:hover { color: var(--accent); border-color: rgba(138,109,59,0.55); }
   .controls input[type="range"] {
     -webkit-appearance: none; appearance: none;
-    width: 92px; height: 4px; border-radius: 999px;
+    width: 4px; height: 72px; border-radius: 999px;
     background: rgba(0,0,0,0.16); cursor: pointer; outline: none;
+    transform: rotate(180deg);
   }
   .controls input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none;
@@ -165,8 +166,8 @@
   </main>
 
   <div class="controls" id="controls" style="display:none">
-    <button id="muteBtn" title="静音 / 取消静音" aria-label="静音">🔊</button>
     <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1" title="音量调节" aria-label="音量调节" />
+    <button id="muteBtn" title="静音 / 取消静音" aria-label="静音">🔊</button>
     <button id="skipBtn" title="跳过打字，直接显示全文" aria-label="跳过">⏭</button>
   </div>
 
