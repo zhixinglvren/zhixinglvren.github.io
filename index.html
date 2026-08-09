@@ -99,21 +99,6 @@
     transition: all 0.25s ease;
   }
   .controls button:hover { color: var(--accent); border-color: rgba(138,109,59,0.55); }
-  .controls input[type="range"] {
-    -webkit-appearance: none; appearance: none;
-    width: 4px; height: 72px; border-radius: 999px;
-    background: rgba(0,0,0,0.16); cursor: pointer; outline: none;
-    transform: rotate(180deg);
-  }
-  .controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent); border: none; cursor: pointer;
-  }
-  .controls input[type="range"]::-moz-range-thumb {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent); border: none; cursor: pointer;
-  }
   .the-end {
     position: fixed; left: 0; right: 0; bottom: 30px; z-index: 10;
     display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -166,7 +151,6 @@
   </main>
 
   <div class="controls" id="controls" style="display:none">
-    <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1" title="音量调节" aria-label="音量调节" />
     <button id="muteBtn" title="静音 / 取消静音" aria-label="静音">🔊</button>
     <button id="skipBtn" title="跳过打字，直接显示全文" aria-label="跳过">⏭</button>
   </div>
@@ -202,7 +186,6 @@
   /* ===== 音频引擎（Web Audio 程序化生成） ===== */
   var actx = null, master = null, musicBus = null, keyGain = null, noiseBuf = null, started = false, muted = false;
   var MUSIC_VOL = 0.13;
-  var userVol = 1;
 
   function makeImpulse(dur, decay) {
     var len = Math.floor(actx.sampleRate * dur);
@@ -223,7 +206,7 @@
 
     // 总开关（受静音控制，受用户音量调节）
     master = actx.createGain();
-    master.gain.value = userVol;
+    master.gain.value = 1;
     master.connect(actx.destination);
 
     // 混响（空间感）
@@ -399,23 +382,13 @@
   document.getElementById('skipBtn').addEventListener('click', skip);
   document.getElementById('restartBtn').addEventListener('click', startStory);
 
-  var volSlider = document.getElementById('volSlider');
-  volSlider.addEventListener('input', function () {
-    userVol = parseFloat(this.value);
-    if (!master || muted) return;
-    var t = actx.currentTime;
-    master.gain.cancelScheduledValues(t);
-    master.gain.setValueAtTime(master.gain.value, t);
-    master.gain.linearRampToValueAtTime(userVol, t + 0.1);
-  });
-
   document.getElementById('muteBtn').addEventListener('click', function () {
     if (!master) return;
     muted = !muted;
     var t = actx.currentTime;
     master.gain.cancelScheduledValues(t);
     master.gain.setValueAtTime(master.gain.value, t);
-    master.gain.linearRampToValueAtTime(muted ? 0 : userVol, t + 0.4);
+    master.gain.linearRampToValueAtTime(muted ? 0 : 1, t + 0.4);
     this.textContent = muted ? '🔇' : '🔊';
   });
 })();
